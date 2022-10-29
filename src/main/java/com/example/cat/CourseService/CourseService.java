@@ -8,9 +8,9 @@ import com.example.cat.entity.Student;
 public interface CourseService {
     
    public List<Courses> findAll();
-   public List<Student> getStudents(int courseId); //(done)
+   public List<Student> getStudents(long courseId); //(done)
   
-   public void addStudent(int courseId, Student stu); //(done)
+   public void addStudent(long courseId, Student stu); //(done)
    public void deleteStudent(int courseId,String email); //(done)  
    public void changeCourse(Student student, int currCourseId, String newCourseName); //(done)
    

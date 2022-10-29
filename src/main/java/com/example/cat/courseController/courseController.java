@@ -2,6 +2,7 @@ package com.example.cat.courseController;
 
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,63 +18,38 @@ import com.example.cat.entity.Student;
 
 @RestController
 @RequestMapping("/api")
+@Slf4j
 public class courseController 
 {
-	
+
 	CourseService courseService;
-	Courses course1=new Courses("course1");
-	Courses course2=new Courses("course2");
-	
-	Student stu1=new Student("sagar","sagarsinghraw77@gmail.com",123) ;
-	Student stu2=new Student("shubham","shubham@gmail.com",90);
 	
 	@Autowired
 	public courseController(CourseService serv) 
 	{
 		this.courseService=serv;
 	}
-	
-	public Courses addCourse(String name, String email, int roll, String courseName) {
-		Courses course=new Courses("course1");
-		
-		course.addStudent(new Student(name,email,roll));
-		
-		return course;
+
+	@PostMapping("/course")
+	public Courses addCourse(@RequestBody Courses course){
+		log.info("Course to be created: "+course.toString());
+		return courseService.save(course);
 	}
-	
-	public void insertCourses() {
-		course1=courseService.save(course1);
-		course2=courseService.save(course2);
-		courseService.addStudent(course1.getId(),stu1);
-		courseService.addStudent(course2.getId(), stu2);
-        courseService.save(course1);
-		courseService.save(course2);
-//		course1.addStudent(new Student("sagar","sagarsinghraw77@gmail.com",123));
-//		course1.addStudent(new Student("surli","surli_surleshwar@gmail.com",124));
-//		
-//		course2.addStudent(new Student("vishal","vishal@gmail.com",89));
-//		course2.addStudent(new Student("shubham","shubham@gmail.com",90));
-		
-		
-		
-	}
-	
   
 	@GetMapping("/courses")
 	public List<Courses> getCourses()
 	{
-		insertCourses();
 		return courseService.findAll();
 	}
 	
 	@GetMapping("/courses/{courseId}")
-	public List<Student> getStudents(@PathVariable int courseId)
+	public List<Student> getStudents(@PathVariable long courseId)
 	{
 		return courseService.getStudents(courseId);
 	}
 	
 	@PostMapping("/courses/{courseId}/newStudent") //(not complete)
-	public Student addStudent(@PathVariable int courseId, @RequestBody Student stu) 
+	public Student addStudent(@PathVariable long courseId, @RequestBody Student stu)
 	{
 		 courseService.addStudent(courseId, stu);
 		 
@@ -83,7 +59,7 @@ public class courseController
 	
 	
 	@DeleteMapping("/courses/{courseId}/{studentEmail}")
-	public Student deleteStudent(@PathVariable int courseId, @PathVariable String studentEmail) 
+	public Student deleteStudent(@PathVariable int courseId, @PathVariable String studentEmail)
 	{
 		Student st=courseService.getStudent(courseId, studentEmail);
 		 courseService.deleteStudent(courseId, studentEmail);
